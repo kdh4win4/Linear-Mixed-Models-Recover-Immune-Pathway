@@ -39,7 +39,7 @@ library(org.Hs.eg.db)
 library(AnnotationDbi)
 
 nCores <- max(1L, parallel::detectCores() - 2L)
-cat(sprintf("[Setup] 패키지 로드 완료 | %d cores\n\n", nCores))
+cat(sprintf("[Setup] package download completed | %d cores\n\n", nCores))
 
 cat("══════════════════════════════════════════\n")
 cat("SECTION 1: GSE271442 metadata + TPM\n")
