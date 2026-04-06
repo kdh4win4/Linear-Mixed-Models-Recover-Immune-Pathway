@@ -1,10 +1,16 @@
-## How to run
+# How to run
 
 Place required input files in ~/Downloads and run:
 
 ```r
 source("RV217_UNIFIED_PIPELINE_GitHub_min.R")
 ```
+
+# Input data
+
+- final_metadata.csv: sample metadata
+- GSE271442_Merged_with_Symbols.csv: TPM matrix with gene symbols
+- 
 
 # Linear-Mixed-Models-Recover-Immune-Pathway
 
