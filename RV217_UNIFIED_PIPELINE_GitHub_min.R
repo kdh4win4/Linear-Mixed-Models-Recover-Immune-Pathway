@@ -9,7 +9,6 @@ cat("═════════════════════════
 setwd("~/Downloads")
 set.seed(2025)
 
-load("RV217_UNIFIED_WORKSPACE__all_stuff_v1.RData")
 
 library(dplyr)
 library(tidyr)
