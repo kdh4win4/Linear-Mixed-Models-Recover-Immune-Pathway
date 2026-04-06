@@ -3,7 +3,7 @@
 # Repository version for journal data availability
 
 cat("══════════════════════════════════════════\n")
-cat("SECTION 0: 환경 설정\n")
+cat("SECTION 0: Environment setting \n")
 cat("══════════════════════════════════════════\n")
 
 setwd("~/Downloads")
@@ -43,7 +43,7 @@ nCores <- max(1L, parallel::detectCores() - 2L)
 cat(sprintf("[Setup] 패키지 로드 완료 | %d cores\n\n", nCores))
 
 cat("══════════════════════════════════════════\n")
-cat("SECTION 1: GSE271442 메타데이터 + TPM\n")
+cat("SECTION 1: GSE271442 metadata + TPM\n")
 cat("══════════════════════════════════════════\n")
 
 rv217_meta <- read_csv("final_metadata.csv", show_col_types = FALSE) %>%
@@ -75,7 +75,7 @@ rv217_meta %>%
   tidyr::pivot_wider(names_from = Broad_vs_Nonbroad, values_from = n) %>%
   print()
 
-cat("\n[TPM] 발현 데이터 로드...\n")
+cat("\n[TPM] expression data loading...\n")
 rv217_merged <- read.csv("GSE271442_Merged_with_Symbols.csv")
 rv217_expr_cols <- rv217_meta$BNB   # 82개 sample column names
 
@@ -221,7 +221,7 @@ rv217_fit_lmm_gene <- function(expr_vec, df) {
 }
 
 cat(sprintf("  LMM on %d genes (%d cores)...\n", nrow(rv217_ltpm), nCores))
-cat("  예상 소요 시간: 15-25분\n")
+cat("  expected time period : 15-25min\n")
 
 rv217_t_list <- bplapply(
   seq_len(nrow(rv217_ltpm)),
@@ -494,7 +494,7 @@ cat("  BroadF sig pathways (PP): ", sum(rv217_broad_effects$sig), "\n")
 cat("  Region sig pathways (PP): ", sum(rv217_region_effects$sig_region), "\n")
 
 cat("\n══════════════════════════════════════════\n")
-cat("SECTION 9: GSE124731 방법론 검증\n")
+cat("SECTION 9: GSE124731 methodolgy confirmation\n")
 cat("══════════════════════════════════════════\n")
 
 gse124731_gse <- getGEO("GSE124731", GSEMatrix = TRUE, AnnotGPL = TRUE)
@@ -562,7 +562,7 @@ gse124731_ranks_limma <- sort(
   setNames(gse124731_tt$t, rownames(gse124731_tt)) %>% .[!is.na(.)],
   decreasing = TRUE)
 
-cat("  LMM 실행 중...\n")
+cat("  LMM running...\n")
 gse124731_lmm_res <- lapply(rownames(gse124731_expr_vd1nk), function(g) {
   df <- data.frame(y = as.numeric(gse124731_expr_vd1nk[g, ]),
                    group = gse124731_meta_vd1nk$cell_type,
@@ -634,7 +634,7 @@ cat("\n  Pathway classification:\n")
 print(table(gse124731_comp$category))
 
 cat("\n══════════════════════════════════════════\n")
-cat("SECTION 10: GSE24081 생물학 검증\n")
+cat("SECTION 10: GSE24081 biology data checking point\n")
 cat("══════════════════════════════════════════\n")
 
 gse24081_gse  <- getGEO("GSE24081", GSEMatrix = TRUE, AnnotGPL = TRUE)
@@ -707,7 +707,7 @@ cat(sprintf("  Target sig: %d / %d\n",
             sum(gse24081_fg$padj < 0.05, na.rm = TRUE), nrow(gse24081_fg)))
 
 cat("\n══════════════════════════════════════════\n")
-cat("MANUSCRIPT 핵심 숫자\n")
+cat("MANUSCRIPT main key numbers confirmation\n")
 cat("══════════════════════════════════════════\n")
 
 cat("\n── GSE271442 Gene-level DE ──\n")
@@ -726,7 +726,7 @@ cat(sprintf("  limma DE: %d | LMM DE: %d (%.1fx)\n",
             gse124731_n_de_lmm / max(gse124731_n_de_limma, 1)))
 
 cat("\n══════════════════════════════════════════\n")
-cat("SECTION 12: 저장\n")
+cat("SECTION 12: saving data \n")
 cat("══════════════════════════════════════════\n")
 
 save(
@@ -752,7 +752,7 @@ save(
 cat("  Saved: RV217_UNIFIED_WORKSPACE.RData\n")
 
 cat("\n══════════════════════════════════════════\n")
-cat("UNIFIED PIPELINE 완료!\n")
+cat("UNIFIED PIPELINE Finished!\n")
 cat("══════════════════════════════════════════\n")
 cat("\n다음 단계: Figure 생성은 기존 v5 코드의 SECTION 10을 사용하세요.\n")
 cat("  → rv217_* 객체명으로 교체 필요\n")
@@ -802,12 +802,12 @@ if (!is.null(rv217_gsea_cross)) {
     geom_point(aes(alpha = both_sig)) +
     geom_text_repel(
       aes(label = label),
-      size = 3.8,            # 글자 크기를 살짝 조절
-      lineheight = 0.85,     # 줄바꿈 된 글자 사이의 간격을 좁게 설정
-      max.overlaps = Inf,    # 겹쳐도 생략하지 않고 최대한 표시
+      size = 3.8,            
+      lineheight = 0.85,     
+      max.overlaps = Inf,    
       segment.size = 0.3,
       segment.color = "gray60",
-      box.padding = 0.6      # 라벨 주변 공간을 확보하여 가독성 증대
+      box.padding = 0.6      
     ) +
     scale_size_manual(values = c("FALSE" = 1.5, "TRUE" = 3.5), guide = "none") +
     scale_alpha_manual(values = c("FALSE" = 0.35, "TRUE" = 0.9), guide = "none") +
@@ -889,8 +889,8 @@ if (!is.null(rv217_nes_comparison)) {
     dplyr::slice_max(abs(NES_lmm), n = 25) %>%
     dplyr::mutate(
       label = clean_go(pathway, width = 40),
-      label = fix_pathway_label(label),        # ★ Title Case + 약어 교정
-      label = reorder(label, NES_lmm)          # LMM 기준 정렬
+      label = fix_pathway_label(label),       
+      label = reorder(label, NES_lmm)          
     )
 
   p2_long <- p2_dat %>%
@@ -908,7 +908,7 @@ if (!is.null(rv217_nes_comparison)) {
     )
 
   x_lim <- max(abs(p2_long$NES), na.rm = TRUE) * 1.15
-  x_lim <- ceiling(x_lim * 2) / 2   # 0.5 단위 반올림
+  x_lim <- ceiling(x_lim * 2) / 2   
 
   collection_label <- p2_dat %>%
     dplyr::select(label, collection) %>%
@@ -1046,10 +1046,8 @@ if (length(rv217_top_go_setpoint) > 0) {
     scale_linetype_manual(values = c("Africa" = "solid",
                                      "Thailand" = "dashed")) +
     scale_x_discrete(
-      labels = c("Pre"      = "Pre\n(-185d)",
-                 "Peak"     = "Peak\n(18d)",
-                 "SetPoint" = "Set\n(42d)",
-                 "Chronic"  = "CHI\n(980d)")
+      labels = c("Pre"      = "Pre\n(-185d)","Peak"     = "Peak\n(18d)",
+                 "SetPoint" = "Set\n(42d)","Chronic"  = "CHI\n(980d)")
     ) +
     labs(
       title    = "Fig 3: C5 GO GSVA trajectories \u2014 4-group comparison",
@@ -1064,12 +1062,9 @@ if (length(rv217_top_go_setpoint) > 0) {
       strip.text      = element_text(size = 12, face = "bold"),
       legend.position = "top",
       legend.box      = "horizontal",
-      legend.title    = element_text(size = 13),
-      legend.text     = element_text(size = 12),
+      legend.title    = element_text(size = 13),legend.text     = element_text(size = 12),
       legend.key.size = unit(0.8, "cm"),
-      axis.title.y    = element_text(size = 13),
-      axis.text.x     = element_text(size = 12),
-      axis.text.y     = element_text(size = 11),
+      axis.title.y    = element_text(size = 13),axis.text.x     = element_text(size = 12),axis.text.y     = element_text(size = 11),
       plot.title      = element_text(size = 18, face = "bold"),
       plot.subtitle   = element_text(size = 12, color = "gray40"),
       plot.caption    = element_text(size = 11, color = "gray50")
@@ -1112,9 +1107,7 @@ if (nrow(rv217_pp_top) > 0) {
   pdf("Fig4_PP_GO_heatmap.pdf", width = 15, height = 16)
 
   pushViewport(viewport(
-    y      = 0.92,
-    height = 0.88,
-    just   = "top"
+    y      = 0.92, height = 0.88, just   = "top"
   ))
 
   draw(
@@ -1122,15 +1115,12 @@ if (nrow(rv217_pp_top) > 0) {
       pp_mat,
       name            = "PP\nBroad>Non-Broad",
       col             = col_fun,
-
       cluster_rows    = TRUE,
       cluster_columns = FALSE,
       show_row_dend   = TRUE,
-      row_dend_width  = unit(1.5, "cm"),   # 너무 크지 않게 1.5cm
-      row_dend_gp     = gpar(lwd = 1.0),   # 선 굵기
-
+      row_dend_width  = unit(1.5, "cm"),   
+      row_dend_gp     = gpar(lwd = 1.0),   
       row_split       = go_type_vec,
-
       row_names_gp    = gpar(fontsize = 13),
       column_names_gp = gpar(fontsize = 15, fontface = "bold"),
       row_title_gp    = gpar(fontsize = 15, fontface = "bold"),
@@ -1168,24 +1158,21 @@ if (nrow(rv217_pp_top) > 0) {
 
   grid.text(
     label = "Fig 4: Region-corrected Posterior Probability of Broad Neutralizer Effect",
-    x    = 0.5,
-    y    = 0.985,
+    x    = 0.5, y    = 0.985,
     just = "top",
     gp   = gpar(fontsize = 16, fontface = "bold", col = "gray15")
   )
 
   grid.text(
     label = "C5 GO:BP and GO:MF  |  SetPoint-ranked  |  RV217 Cohort (GSE271442)",
-    x    = 0.5,
-    y    = 0.958,
+    x    = 0.5, y    = 0.958,
     just = "top",
     gp   = gpar(fontsize = 13, col = "gray40")
   )
 
   grid.text(
     label = "GSE271442 | Dohoon Kim · PromptGenix LLC",
-    x    = 0.98,
-    y    = 0.012,
+    x    = 0.98, y    = 0.012,
     just = "right",
     gp   = gpar(fontsize = 10, col = "gray55")
   )
@@ -1216,8 +1203,7 @@ if (length(rv217_top_region_go) > 0) {
                aes(TimeF, mean_score, color = Region, group = Region)) +
     geom_line(linewidth = 1.2) +
     geom_point(size = 3.2) +
-    geom_errorbar(aes(ymin = mean_score - se_score,
-                      ymax = mean_score + se_score),
+    geom_errorbar(aes(ymin = mean_score - se_score,ymax = mean_score + se_score),
                   width = 0.22, alpha = 0.55, linewidth = 0.7) +
     facet_wrap(~ pw_label, scales = "free_y", ncol = 2) +
     scale_color_manual(values = region_colors) +
@@ -1237,12 +1223,9 @@ if (length(rv217_top_region_go) > 0) {
     theme_minimal(base_size = 14) +
     theme(
       strip.text      = element_text(size = 12, face = "bold"),
-      legend.position = "top",
-      legend.text     = element_text(size = 13),
+      legend.position = "top",legend.text     = element_text(size = 13),
       legend.key.size = unit(0.8, "cm"),
-      axis.title.y    = element_text(size = 13),
-      axis.text.x     = element_text(size = 12),
-      axis.text.y     = element_text(size = 11),
+      axis.title.y    = element_text(size = 13),axis.text.x     = element_text(size = 12),axis.text.y     = element_text(size = 11),
       plot.title      = element_text(size = 18, face = "bold"),
       plot.subtitle   = element_text(size = 12, color = "gray40"),
       plot.caption    = element_text(size = 11, color = "gray50")
@@ -1271,20 +1254,16 @@ theme_map <- dplyr::case_when(
 gse124731_comp$theme <- theme_map
 
 theme_colors <- c(
-  "B cell / NFATC1"         = "#E41A1C",
-  "IFN / Antiviral"         = "#377EB8",
-  "Ribosome / Translation"  = "#4DAF4A",
-  "NK-like"                 = "#FF7F00",
+  "B cell / NFATC1"         = "#E41A1C","IFN / Antiviral"         = "#377EB8",
+  "Ribosome / Translation"  = "#4DAF4A","NK-like"                 = "#FF7F00",
   "Other"                   = "#999999"
 )
 
 fig_a_df <- tibble::tibble(
-  Method  = factor(c("limma", "LMM"), levels = c("limma", "LMM")),
-  DE_genes = c(gse124731_n_de_limma, gse124731_n_de_lmm)
+  Method  = factor(c("limma", "LMM"), levels = c("limma", "LMM")),DE_genes = c(gse124731_n_de_limma, gse124731_n_de_lmm)
 )
 
-fig_a <- ggplot(fig_a_df, aes(x = Method, y = DE_genes, fill = Method)) +
-  geom_col(width = 0.6) +
+fig_a <- ggplot(fig_a_df, aes(x = Method, y = DE_genes, fill = Method)) + geom_col(width = 0.6) +
   geom_text(aes(label = scales::comma(DE_genes)), vjust = -0.5, size = 6) +
   scale_fill_manual(values = c("limma" = "#B4B2A9", "LMM" = "#E41A1C")) +
   labs(title = "A) DE Genes (V\u03b41 vs NK)",
@@ -1311,13 +1290,11 @@ fig_b_df <- gse124731_comp %>%
 fig_b <- ggplot(fig_b_df, aes(x = NES_limma, y = NES_lmm, color = category)) +
   geom_abline(slope = 1, intercept = 0,
               linetype = "dashed", color = "grey50", linewidth = 0.5) +
-  geom_hline(yintercept = 0, linewidth = 0.3, color = "grey70") +
-  geom_vline(xintercept = 0, linewidth = 0.3, color = "grey70") +
+  geom_hline(yintercept = 0, linewidth = 0.3, color = "grey70") + geom_vline(xintercept = 0, linewidth = 0.3, color = "grey70") +
   geom_point(size = 4, alpha = 0.85) +
   ggrepel::geom_text_repel(
     data = fig_b_df %>% dplyr::filter(category %in% c("LMM only", "limma only")),
-    aes(label = pathway_short),
-    size = 4, max.overlaps = 30, box.padding = 0.5,
+    aes(label = pathway_short),size = 4, max.overlaps = 30, box.padding = 0.5,
     segment.size = 0.3, segment.color = "grey50",
     fontface = "bold", color = "black"
   ) +
@@ -1329,10 +1306,7 @@ fig_b <- ggplot(fig_b_df, aes(x = NES_limma, y = NES_lmm, color = category)) +
     segment.size = 0.2, segment.color = "grey60"
   ) +
   scale_color_manual(
-    values = c("Both"       = "#377EB8",
-               "LMM only"   = "#E41A1C",
-               "limma only" = "#FF7F00",
-               "Neither"    = "#CCCCCC"),
+    values = c("Both"       = "#377EB8","LMM only"   = "#E41A1C","limma only" = "#FF7F00","Neither"    = "#CCCCCC"),
     name = "Category"
   ) +
   labs(title = "B) NES: limma vs LMM",
@@ -1378,15 +1352,11 @@ fig_c <- ggplot(fig_c_df, aes(x = NES_lmm, y = pathway_short, fill = theme)) +
   theme_minimal(base_size = 14) +
   theme(plot.title    = element_text(size = 16, face = "bold"),
         plot.subtitle = element_text(size = 12, color = "gray40"),
-        axis.text.y   = element_text(size = 11),
-        axis.text.x   = element_text(size = 12),
+        axis.text.y   = element_text(size = 11),axis.text.x   = element_text(size = 12),
         axis.title    = element_text(size = 13),
-        legend.position = "bottom",
-        legend.title  = element_text(size = 12),
-        legend.text   = element_text(size = 11))
+        legend.position = "bottom",legend.title  = element_text(size = 12),legend.text   = element_text(size = 11))
 
-fig_validation <- fig_a + fig_b + fig_c +
-  plot_layout(widths = c(0.8, 1.3, 1.5)) +
+fig_validation <- fig_a + fig_b + fig_c + plot_layout(widths = c(0.8, 1.3, 1.5)) +
   plot_annotation(
     title = "GSE124731: Methodological Validation (V\u03b41 vs NK, Low-Input RNA-seq)",
     subtitle = sprintf(
@@ -1397,20 +1367,15 @@ fig_validation <- fig_a + fig_b + fig_c +
     ),
     caption = "GSE124731 | Dohoon Kim \u00b7 PromptGenix LLC",
     theme = theme(
-      plot.title    = element_text(size = 20, face = "bold"),
-      plot.subtitle = element_text(size = 14, color = "gray30"),
-      plot.caption  = element_text(size = 11, color = "gray50")
+      plot.title    = element_text(size = 20, face = "bold"),plot.subtitle = element_text(size = 14, color = "gray30"),plot.caption  = element_text(size = 11, color = "gray50")
     )
   )
 
-ggsave("Fig_GSE124731_validation.pdf", fig_validation,
-       width = 22, height = 10)
+ggsave("Fig_GSE124731_validation.pdf", fig_validation, width = 22, height = 10)
 message("Saved: Fig_GSE124731_validation.pdf")
 
-ggsave("Fig_GSE124731_panelA.pdf", fig_a, width = 6, height = 7)
-ggsave("Fig_GSE124731_panelB.pdf", fig_b, width = 9, height = 8)
-ggsave("Fig_GSE124731_panelC.pdf", fig_c, width = 10, height = 8)
-message("Saved: individual panels (A, B, C)")
+ggsave("Fig_GSE124731_panelA.pdf", fig_a, width = 6, height = 7); ggsave("Fig_GSE124731_panelB.pdf", fig_b, width = 9, height = 8)
+ggsave("Fig_GSE124731_panelC.pdf", fig_c, width = 10, height = 8); message("Saved: individual panels (A, B, C)")
 
 cat("\n\u2550\u2550 GSE124731 Validation Summary \u2550\u2550\n")
 cat(sprintf("  limma DE genes: %d\n", gse124731_n_de_limma))
@@ -1426,12 +1391,7 @@ gse124731_comp %>%
   print()
 
 cat("Hallmark:", length(shared_gs_hallmark), "\n")
-cat("C2 Reactome:", length(shared_gs_c2_reactome), "\n")
-cat("C2 KEGG:", length(shared_gs_c2_kegg), "\n")
-cat("C5 GO:BP:", length(shared_gs_c5bp_fgsea), "\n")
-cat("C5 GO:MF:", length(shared_gs_c5mf_fgsea), "\n")
-cat("C7 ImmuneSigDB:", length(shared_gs_c7), "\n")
-cat("Total fGSEA:", length(shared_all_gene_sets), "\n")
-cat("\nGSVA GO:BP immune:", length(shared_gs_c5bp_immune), "\n")
-cat("GSVA GO:MF:", length(shared_gs_c5mf_gsva), "\n")
-cat("GSVA total:", length(shared_gs_c5_for_gsva), "\n")
+cat("C2 Reactome:", length(shared_gs_c2_reactome), "\n");cat("C2 KEGG:", length(shared_gs_c2_kegg), "\n")
+cat("C5 GO:BP:", length(shared_gs_c5bp_fgsea), "\n");cat("C5 GO:MF:", length(shared_gs_c5mf_fgsea), "\n")
+cat("C7 ImmuneSigDB:", length(shared_gs_c7), "\n");cat("Total fGSEA:", length(shared_all_gene_sets), "\n");cat("\nGSVA GO:BP immune:", length(shared_gs_c5bp_immune), "\n")
+cat("GSVA GO:MF:", length(shared_gs_c5mf_gsva), "\n");cat("GSVA total:", length(shared_gs_c5_for_gsva), "\n")
