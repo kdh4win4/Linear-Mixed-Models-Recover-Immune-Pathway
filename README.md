@@ -1,6 +1,12 @@
 # Linear-Mixed-Models-Recover-Immune-Pathway
 
 Repository for Bioinformatics(Oxford) journal data availability.
+"Linear Mixed Models Recover Immune Pathway Signatures Masked by Inter-individual Variance in Sorted γδ T Cell RNA-seq: IFN-α and B Cell Activation as Correlates of HIV Neutralization Breadth"
+
+Dohoon Kim
+PromptGenix LLC
+Corresponding author: dkim@promptgenix.org
+
 
 ## Overview
 
