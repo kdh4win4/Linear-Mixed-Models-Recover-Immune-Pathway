@@ -49,7 +49,7 @@ All datasets are publicly available through NCBI GEO.
 
 ## Repository Contents
 
-- RV217_UNIFIED_PIPELINE_GitHub_min.R  
+- RV217_UNIFIED_PIPELINE_GitHub.R  
   Compact reproducible version of the unified analysis pipeline and figure-generation code
 
 ---
