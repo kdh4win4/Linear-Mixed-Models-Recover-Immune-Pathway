@@ -8,8 +8,8 @@ source("RV217_UNIFIED_PIPELINE_GitHub.R")
 
 # Input data
 
-- final_metadata.csv: sample metadata
-- GSE271442_Merged_with_Symbols.csv: TPM matrix with gene symbols
+- final_metadata.csv: Sample metadata (reconstructed from GSE271442 supplementary data)
+- GSE271442_Merged_with_Symbols.csv: TPM expression matrix (31 MB) with gene symbols (unzip csv.zip before use)
 
 # Linear-Mixed-Models-Recover-Immune-Pathway
 
