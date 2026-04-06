@@ -1,6 +1,6 @@
 # Linear-Mixed-Models-Recover-Immune-Pathway
 
-Minimal repository for journal data availability.
+Repository for Bioinformatics(Oxford) journal data availability.
 
 ## Overview
 
