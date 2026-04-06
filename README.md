@@ -23,7 +23,7 @@ The workflow integrates differential expression, gene set enrichment, and valida
 
 Place the required input files in `~/Downloads`, then run:
 
-    source("RV217_UNIFIED_PIPELINE_GitHub_min.R")
+    source("RV217_UNIFIED_PIPELINE_GitHub.R")
 
 ---
 
