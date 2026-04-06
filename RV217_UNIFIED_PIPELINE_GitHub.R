@@ -222,12 +222,34 @@ rv217_fit_lmm_gene <- function(expr_vec, df) {
 cat(sprintf("  LMM on %d genes (%d cores)...\n", nrow(rv217_ltpm), nCores))
 cat("  expected time period : 15-25min\n")
 
-rv217_t_list <- bplapply(
-  seq_len(nrow(rv217_ltpm)),
-  function(i) rv217_fit_lmm_gene(rv217_ltpm[i, ], rv217_meta),
-  BPPARAM = MulticoreParam(workers = nCores, progressbar = TRUE)
-)
+#rv217_t_list <- bplapply(
+#  seq_len(nrow(rv217_ltpm)),
+#  function(i) rv217_fit_lmm_gene(rv217_ltpm[i, ], rv217_meta),
+#  BPPARAM = MulticoreParam(workers = nCores, progressbar = TRUE)
+#)
+#rv217_t_mat <- do.call(rbind, rv217_t_list)
+
+#
+# ── bplapply replacement: more stable lapply + longer runtime ──
+cat(sprintf("  LMM on %d genes (single-thread, stable)...\n", nrow(rv217_ltpm)))
+n_genes <- nrow(rv217_ltpm)
+
+rv217_t_list <- vector("list", n_genes)
+t0 <- Sys.time()
+
+for (i in seq_len(n_genes)) {
+  rv217_t_list[[i]] <- rv217_fit_lmm_gene(rv217_ltpm[i, ], rv217_meta)
+  if (i %% 500 == 0) {
+    elapsed <- as.numeric(difftime(Sys.time(), t0, units = "mins"))
+    eta     <- elapsed / i * (n_genes - i)
+    cat(sprintf("    %d/%d (%.0f%%) | %.1f min elapsed | ~%.1f min remaining\n",
+                i, n_genes, i/n_genes*100, elapsed, eta))
+  }
+}
+
+
 rv217_t_mat <- do.call(rbind, rv217_t_list)
+#
 
 rv217_lmm_ranks <- tibble::tibble(
   Symbol   = rownames(rv217_ltpm),
